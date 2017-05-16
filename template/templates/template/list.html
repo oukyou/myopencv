@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}書籍の一覧{% endblock title %}
+
+{% block extrahead %}
+<style>
+table {
+  margin-top: 8px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <h3 class="page-header">テンプレート一覧</h3>
+    <a href="{% url 'template:template_create' %}" class="btn btn-default btn-sm">追加</a>
+
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>名前</th>
+          <th>メモ</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in templates %}
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.memo }}</td>
+          <td>
+            <a href="{% url 'template:template_update' id=item.id %}" class="btn btn-default btn-sm">修正</a>
+            <a href="{% url 'template:template_delete' id=item.id %}" class="btn btn-default btn-sm">削除</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock content %}
