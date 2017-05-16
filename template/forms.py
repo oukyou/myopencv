@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from template.models import Templates,Images, Document
+from template.models import Templates,Images
 
 # class TemplateForm(ModelForm):
 #     """テンプレートフォーム"""
@@ -17,10 +17,5 @@ class TemplateForm(ModelForm):
 class ImageForm(forms.ModelForm):
     class Meta:
         model = Images
-        fields = ('rank', 'path', 'template')
-
-class DocumentForm(forms.ModelForm):
-    class Meta:
-        model = Document
-        fields = ('description', 'document', )
+        fields = ('name', 'path', 'rank', 'template', )
 

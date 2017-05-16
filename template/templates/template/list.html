@@ -12,7 +12,7 @@ table {
 
 {% block content %}
     <h3 class="page-header">テンプレート一覧</h3>
-    <a href="{% url 'template:template_create' %}" class="btn btn-default btn-sm">追加</a>
+    <a href="{% url 'template:template_create' %}" class="btn btn-sm btn-default">テンプレート追加</a>
 
     <table class="table table-striped table-bordered">
       <thead>
@@ -30,8 +30,8 @@ table {
           <td>{{ item.name }}</td>
           <td>{{ item.memo }}</td>
           <td>
-            <a href="{% url 'template:template_update' id=item.id %}" class="btn btn-default btn-sm">修正</a>
-            <a href="{% url 'template:template_delete' id=item.id %}" class="btn btn-default btn-sm">削除</a>
+            <a href="{% url 'template:template_update' id=item.id %}" class="btn btn-sm btn-primary">修正</a>
+            <a href="{% url 'template:template_delete' id=item.id %}" class="btn btn-sm btn-danger">削除</a>
           </td>
         </tr>
         {% endfor %}

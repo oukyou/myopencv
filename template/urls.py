@@ -12,4 +12,6 @@ urlpatterns = [
     #url(r'^template/upload/$', views.image_upload, name='image_upload'),  # アップロード
 
     url(r'^template/update/(?P<id>\d+)/upload$', views.image_upload, name='image_upload'),  # 修正
+    url(r'^image/delete/(?P<id>\d+)/$', views.image_delete, name='image_delete'),  # 削除
+
 ]

@@ -10,17 +10,37 @@
 <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet">
 <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
 <script src="{% static 'js/jquery-ui.min.js' %}"></script>
-
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-{% block extrahead %}{% endblock %}
+
+<!-- fancybox -->
+<script src="{% static 'js/fancybox/jquery.fancybox.js' %}"></script>
+<link href="{% static  'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet">
+
+<script src="{% static 'js/jquery.uploadThumbs.js' %}"></script>
+
+
+    {% block extrahead %}{% endblock %}
 </head>
 
 
 <body>
-  <div class="container">
-    {% block content %}
-      {{ content }}
-    {% endblock %}
-  </div>
+
+    <div id="container">
+
+        <div id="header">
+        </div>
+
+        <div class="breadcrumbs">
+
+        </div>
+
+        <div class="container">
+        {% block content %}
+          {{ content }}
+        {% endblock %}
+        </div>
+
+    </div>
+
 </body>
 </html>

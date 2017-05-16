@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+
+  <h3 class="page-header">画像追加</h3>
+
+<style type="text/css">
+img{
+    width: 300px;
+    height: 300px;
+}
+</style>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!--{{ form.as_p }}-->
+<!--      {{ form|bootstrap_horizontal }}-->
+
+        {% for field in form %}
+            <div class="form-group">
+
+            {% if field.errors %}
+                <div class="control-group error">
+                    <label class="control-label">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        <span class="help-inline">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="control-group">
+                    <label class="control-label">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        {% if field.help_text %}
+                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            </div>
+        {% endfor %}
+
+
+    <div class="form-group">
+        <div class="control-group">
+            <button type="submit" class="btn btn-primary pull-right">送信</button>
+            <a href="{% url 'template:template_update' id=template.id %}" class="btn btn-default btn-sm">戻る</a>
+
+        </div>
+    </div>
+
+  </form>
+
+<script>
+$(document).ready(function () {
+    $('form input:file').uploadThumbs({
+        position : 0,      // 0:before, 1:after, 2:parent.prepend, 3:parent.append,
+                           // any: arbitrarily jquery selector
+        imgbreak : true    // append <br> after thumbnail images
+    });
+})
+</script>
+
+
+{% endblock %}
+
