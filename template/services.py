@@ -7,59 +7,39 @@ from api.models import Transaction
 
 from django.shortcuts import get_object_or_404
 
-def handler(imagepath, templates):
-    """
-    :param imagepath: 
-    :param templates: 
-    :return: 
-    """
+#===========================================
+# private method
+#===========================================
+def handler( transaction ):
+    # 画像の相対パス
+    path = transaction.src_image.path
 
-    # 結果格納パス
-    resultImage = os.path.join(os.path.dirname(imagepath), "result", os.path.basename(imagepath))
-    # 結果格納フォルダー
-    folder = os.path.dirname(resultImage);
-    if not os.path.isdir(folder):
-        # 存在しない場合、新規に作る
-        os.mkdir(folder)
+    # テンプレート画像
+    template = get_object_or_404(Templates, pk=transaction.template_id)
+    images = []
+    for image in template.Images.all().order_by('rank'):
+        images.append(image.path.file)
 
+    # opencvでテンプレートマッチング
+    opencv(path, images);
+
+
+def opencv(path, images):
+    print("path: " + path)
+    print("images: " + str(path))
 
     # load the image image, convert it to grayscale, and detect edges
-    template = cv2.imread(imagepath)
+    template = cv2.imread(path)
     # grayscale
     template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
     # detect edges
     template = cv2.Canny(template, 50, 200)
 
-    print("result image path : " + resultImage)
-    cv2.imwrite(resultImage, template);
+    # 結果格納パス
+    resultPath = os.path.join(os.path.dirname(path), "result", os.path.basename(path))
+    cv2.imwrite(resultPath, template);
 
-
-
-# 画像の相対パス
-imagename = "transaction/cod_mw3.jpg";
-
-# ROOT PATH
-rootPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# 画像の絶対パス
-imagepath = os.path.join(rootPath, "data", imagename)
-
-id = 9
-
-template = get_object_or_404(Templates, pk=id)
-images = template.Images.all().order_by('rank')
-
-items = []
-for image in images:
-    items.append(image.path)
-
-
-print(items)
-handler(imagepath, [])
-
-
-
-
-
+    return True
 
 
 
