@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% load static %}
+
+{% block title %}トランザクション新規{% endblock title %}
+
+{% block content %}
+
+
+<style type="text/css">
+img{
+    width: 50%;
+    height: 50%;
+}
+</style>
+
+
+
+    <h3 class="page-header">トランザクション新規</h3>
+    <form action="{% url 'template:transaction_create' %}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <!--{{ form|bootstrap_horizontal }}-->
+
+        {% for field in form %}
+            <div class="form-group">
+
+            {% if field.errors %}
+                <div class="control-group error">
+                    <label class="control-label">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        <span class="help-inline">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="control-group">
+                    <label class="control-label">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        {% if field.help_text %}
+                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            </div>
+        {% endfor %}
+
+
+    {% if id %}
+        <div class="form-group">
+            <div class="control-group">
+                <label class="control-label">画像一覧</label>
+                <div class="controls">
+                    <table class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <!--<th>ID</th>-->
+                          <th>画像</th>
+                          <th>順位</th>
+                          <th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody id="sortTable">
+                        {% for image in images %}
+                        <tr>
+                          <!--<td>{{ image.id }}</td>-->
+                          <td>
+                              <a data-fancybox="gallery" href="{{ image.path.url }}">
+                                <img src="{{ image.path.url }}" width="50px" height="40px"/>
+                              </a>
+                          </td>
+
+                          <td class="rank">
+                              <!--{{ image.rank }}-->
+                              <input type='text' name='rank' value='{{ image.rank }}' class="form-control">
+                              <input type='hidden' name='id' value='{{ image.id }}'>
+                          </td>
+                          <td>
+                            <a href="{% url 'template:image_delete' id=image.id %}" class="btn btn-sm btn-danger">削除</a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="control-group">
+                <a href="{% url 'template:image_upload' id=id %}" class="btn btn-primary btn-sm pull-right">画像追加</a>
+            </div>
+        </div>
+    {% endif %}
+
+      <div class="form-group">
+        <div class="control-group">
+          <a href="{% url 'template:template_list' %}" class="btn btn-default btn-sm">戻る</a>
+
+          <button type="submit" class="btn btn-sm btn-primary">送信</button>
+        </div>
+      </div>
+
+    </form>
+
+<script>
+$(document).ready(function () {
+    $('form input:file').uploadThumbs({
+        position : 0,      // 0:before, 1:after, 2:parent.prepend, 3:parent.append,
+                           // any: arbitrarily jquery selector
+        imgbreak : true    // append <br> after thumbnail images
+    });
+})
+</script>
+
+
+{% endblock content %}
+
+
+
+
+
+
+

@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'template',
     'bootstrapform',
-
+    'template',
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -134,8 +135,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-
 # 静的ファイルを共通で置く
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
@@ -145,16 +144,12 @@ STATICFILES_DIRS = (
 
 WEBROOT = "http://10.68.96.157:8000/"
 
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',  # 1. の方法を使う場合
-#     #'django.template.loaders.app_directories.Loader',  # 2. の方法を使う場合
-# )
-#
-# ROOT_PATH = os.path.dirname(__file__)
-#
-# TEMPLATE_DIRS = (
-#     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-#     # Always use forward slashes, even on Windows.
-#     # Don't forget to use absolute paths, not relative paths.
-#     os.path.join(ROOT_PATH, 'templates'),
-# )
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "data")
+
+# URL that handles the media served from MEDIA_ROOT.
+# Example: "http://media.lawrence.com"
+MEDIA_URL = '/images/'
+
+

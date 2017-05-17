@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load bootstrap %}
+{% load static %}
 
 {% block title %}テンプレート編集{% endblock title %}
 
@@ -54,13 +55,13 @@
                           <th>操作</th>
                         </tr>
                       </thead>
-                      <tbody id="sortTable">
+                      <tbody>
                         {% for image in images %}
                         <tr>
                           <!--<td>{{ image.id }}</td>-->
                           <td>
-                              <a data-fancybox="gallery" href="{{ webroot }}{{ image.path }}">
-                                <img src="{{ webroot }}{{ image.path }}" width="50px" height="40px"/>
+                              <a data-fancybox="gallery" href="{{ image.path.url }}">
+                                <img src="{{ image.path.url }}" width="50px" height="40px"/>
                               </a>
                           </td>
 

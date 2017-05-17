@@ -25,7 +25,7 @@ table {
       </thead>
       <tbody>
         {% for item in templates %}
-        <tr>
+        <tr class="{% if forloop.counter|divisibleby:2 %}success{% else %}active{% endif %}">
           <td>{{ item.id }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.memo }}</td>

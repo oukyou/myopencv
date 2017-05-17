@@ -56,3 +56,21 @@
 ```
     python manage.py runserver 192.168.0.1:8000
 ```
+
+
+#### rest apiに必要なライブラリ
+```
+    pip install django
+    pip install djangorestframework
+    pip install django-filter
+```
+
+#### opencvインストール
+```
+    pip install libs\opencv_python-3.2.0-cp36-cp36m-win_amd64.whl
+```
+
+#### numpy インストール
+pip install numpy
+
+

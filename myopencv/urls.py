@@ -17,11 +17,28 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from django.conf.urls.static import static
-from django.conf import settings
+
+from api.urls import router as api_router
+
+from .settings import MEDIA_ROOT, MEDIA_URL
+from django.views.static import serve
 
 urlpatterns = [
     # admin を有効にする
     url(r'^admin/', admin.site.urls),
 
+    # template
     url(r'^template/', include('template.urls', namespace='template')),
+
+    # API
+    url(r'^api/', include(api_router.urls)),
+
+    # link: http://stackoverflow.com/questions/34727928/django-1-10-urls-deprecation
+    url(r'^data/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})
 ]
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+#urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
+

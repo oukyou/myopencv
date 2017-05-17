@@ -1,4 +1,6 @@
 {% load staticfiles %}
+
+
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
 
@@ -17,8 +19,6 @@
 <link href="{% static  'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet">
 
 <script src="{% static 'js/jquery.uploadThumbs.js' %}"></script>
-
-
     {% block extrahead %}{% endblock %}
 </head>
 
@@ -27,7 +27,8 @@
 
     <div id="container">
 
-        <div id="header">
+        <div>
+
         </div>
 
         <div class="breadcrumbs">

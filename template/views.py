@@ -2,15 +2,23 @@ from django.shortcuts import render, get_object_or_404, redirect, render_to_resp
 from django.http import HttpResponse, HttpResponseRedirect
 
 from template.models import Templates, Images
-from template.forms import TemplateForm, ImageForm
+from template.forms import TemplateForm, ImageForm, TransactionForm
+
+from api.models import Transaction
 
 from django.views.generic.list import ListView
 from myopencv.settings import WEBROOT
 
 from django.db import transaction
 
+import cv2
+import os
 
 # Create your views here.
+
+#===========================================
+# Template
+#===========================================
 def template_list(request):
     """テンプレート一覧"""
     templates = Templates.objects.all().order_by('id')
@@ -82,4 +90,76 @@ def image_upload(request, id):
         'form': form,
         'template': template
     })
+
+
+
+
+#===========================================
+# Transation
+#===========================================
+def transaction_list(request):
+    """テンプレート一覧"""
+    transactions = Transaction.objects.all().order_by('id').reverse()
+    return render(request, 'transaction/list.html', {'transactions': transactions})
+
+
+def transaction_create(request):
+    """テンプレート編集"""
+
+    transaction = Transaction();
+
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, request.FILES, instance=transaction);
+        if form.is_valid():
+            transaction = form.save()
+            transaction.save();
+
+            # テンプレートマッチング処理
+            handler(transaction)
+
+            transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
+            transaction.save();
+
+            return redirect('template:transaction_list')
+    else:
+        form = TransactionForm(instance=transaction)
+
+    return render(request, 'transaction/create.html', dict(
+            form=form,
+        ))
+
+
+#===========================================
+# private method
+#===========================================
+def handler( transaction ):
+    # 画像の相対パス
+    path = transaction.src_image.path
+
+    # テンプレート画像
+    template = get_object_or_404(Templates, pk=transaction.template_id)
+    images = []
+    for image in template.Images.all().order_by('rank'):
+        images.append(image.path.file)
+
+    # opencvでテンプレートマッチング
+    opencv(path, images);
+
+
+def opencv(path, images):
+    print("path: " + path)
+    print("images: " + str(path))
+
+    # load the image image, convert it to grayscale, and detect edges
+    template = cv2.imread(path)
+    # grayscale
+    template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+    # detect edges
+    template = cv2.Canny(template, 50, 200)
+
+    # 結果格納パス
+    resultPath = os.path.join(os.path.dirname(path), "result", os.path.basename(path))
+    cv2.imwrite(resultPath, template);
+
+    return True
 
