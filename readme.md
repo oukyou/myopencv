@@ -73,4 +73,11 @@
 #### numpy インストール
 pip install numpy
 
-
+pip install Django==1.11.1
+pip install django-fontawesome
+pip install django-bootstrap-form
+pip install djangorestframework
+pip install django-filter
+pip install pymysql
+pip install mysqlclient
+pip install numpy

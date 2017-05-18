@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrapform',
+    'fontawesome',
     'template',
     'api',
     'rest_framework',
@@ -74,6 +75,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myopencv.wsgi.application'
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -89,8 +92,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'opencv',
-        'USER': 'root',
-        'PASSWORD': 'rootadmin',
+        'USER': 'oukyou',
+        'PASSWORD': '1qaz2wsx',
         'HOST': 'localhost',
         'PORT': '3306',
     }

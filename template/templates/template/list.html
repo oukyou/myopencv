@@ -1,40 +1,90 @@
 {% extends "base.html" %}
+{% load bootstrap %}
+{% load static %}
+{% load fontawesome %}
 
-{% block title %}書籍の一覧{% endblock title %}
+{% block title %}テンプレート一覧{% endblock title %}
 
-{% block extrahead %}
-<style>
-table {
-  margin-top: 8px;
-}
-</style>
-{% endblock %}
 
 {% block content %}
     <h3 class="page-header">テンプレート一覧</h3>
-    <a href="{% url 'template:template_create' %}" class="btn btn-sm btn-default">テンプレート追加</a>
-
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>名前</th>
-          <th>メモ</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in templates %}
-        <tr class="{% if forloop.counter|divisibleby:2 %}success{% else %}active{% endif %}">
-          <td>{{ item.id }}</td>
-          <td>{{ item.name }}</td>
-          <td>{{ item.memo }}</td>
-          <td>
-            <a href="{% url 'template:template_update' id=item.id %}" class="btn btn-sm btn-primary">修正</a>
-            <a href="{% url 'template:template_delete' id=item.id %}" class="btn btn-sm btn-danger">削除</a>
-          </td>
-        </tr>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == "info" %}
+                <div class="alert alert-success">
+                    <a class="close" data-dismiss="alert">{% fontawesome_icon 'remove'  %}</a>
+                   {{ message }}
+                </div>
+            {% endif %}
+             {% if message.tags == "error" %}
+                <div class="alert alert-danger">
+                    <a class="close" data-dismiss="alert">{% fontawesome_icon 'remove'  %}</a>
+                   {{ message }}
+                </div>
+            {% endif %}
         {% endfor %}
-      </tbody>
-    </table>
+    {% endif %}
+
+
+    <a href="{% url 'template:template_create' %}" class="btn btn-success">テンプレート登録  {% fontawesome_icon 'caret-right'  %}</a>
+
+    {% if templates %}
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>＃</th>
+              <th>名前</th>
+              <th>メモ</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {% for item in templates %}
+            <tr>
+              <td>{{ forloop.counter }} </td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.memo }}</td>
+              <td class="operation">
+                <a href="{% url 'template:template_update' id=item.id %}" class="btn btn-sm btn-warning">修正 {% fontawesome_icon 'edit'  %}</a>
+                <a href="{% url 'template:template_delete' id=item.id %}" class="btn btn-sm btn-danger" id="deleteBtn{{ item.id }}">削除 {% fontawesome_icon 'trash'  %}</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div id="dialog-confirm" title="テンプレート削除確認">
+          <p><span class="ui-icon ui-icon-alert" ></span>テンプレートを削除します。よろしいでしょうか?</p>
+        </div>
+
+
+    {% endif %}
+    <script>
+          $(function(){
+            //　モーダル初期設定
+            $('#dialog-confirm').dialog({
+                autoOpen: false,  // 自動でオープンしない
+                modal: true,      // モーダル表示する
+                resizable: false, // リサイズしない
+                draggable: false, // ドラッグしない
+                show: "clip",     // 表示時のエフェクト
+                hide: "fade",      // 非表示時のエフェクト
+                buttons: {
+                    "確認": function() {
+                        location.href=target_url;
+                    },
+                    "閉じる": function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
+
+            // .selecter クリック時にモーダル表示
+            $("[id^=deleteBtn]").on("click",function(){
+                target_url = $(this).attr("href");
+                $('#dialog-confirm').dialog('open');
+                return false;
+            });
+        });
+    </script>
 {% endblock content %}

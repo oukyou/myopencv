@@ -11,6 +11,7 @@ from myopencv.settings import WEBROOT
 from template.services import handler
 
 from django.db import transaction
+from django.contrib import messages
 
 import cv2
 import os
@@ -23,6 +24,9 @@ import os
 def template_list(request):
     """テンプレート一覧"""
     templates = Templates.objects.all().order_by('id')
+    if len(templates) == 0:
+        messages.info(request, 'テンプレートが登録されていません。')
+
     return render(request, 'template/list.html', {'templates': templates})
 
 @transaction.atomic
@@ -31,6 +35,8 @@ def template_update(request, id=None):
     if id:
         template = get_object_or_404(Templates, pk=id)
         images = template.Images.all().order_by('rank')
+        if len(images) == 0:
+            messages.info(request, 'テンプレート画像が登録されていません。')
     else:
         template = Templates();
         images = [];
@@ -39,15 +45,20 @@ def template_update(request, id=None):
         form = TemplateForm(request.POST, instance=template);
         if form.is_valid():
             ranks = request.POST.getlist('rank')
+            names = request.POST.getlist('image_name')
             ids = request.POST.getlist('id')
             for index, value in enumerate(ids):
                 img = get_object_or_404(Images, pk=value)
                 img.rank = ranks[index]
+                img.name = names[index]
                 img.save();
 
             template = form.save()
             template.save();
-
+            if id:
+                messages.info(request, 'テンプレートを更新しました。')
+            else:
+                messages.info(request, 'テンプレートを登録しました。')
             return redirect('template:template_list')
     else:
         form = TemplateForm(instance=template)
@@ -61,6 +72,7 @@ def template_delete(request, id):
     """テンプレート削除"""
     template = get_object_or_404(Templates, pk=id)
     template.delete()
+    messages.info(request, 'テンプレートを削除しました。')
     return redirect('template:template_list')
 
 def image_delete(request, id):
@@ -68,6 +80,7 @@ def image_delete(request, id):
     image = get_object_or_404(Images, pk=id)
     template_id = image.template_id
     image.delete()
+    messages.info(request, 'テンプレート画像を削除しました。')
     return redirect('template:template_update', id=template_id)
 
 
@@ -79,6 +92,7 @@ def image_upload(request, id):
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.info(request, 'テンプレート画像を登録しました。')
             return redirect('template:template_update', id=id)
     else:
         # http://stackoverflow.com/questions/813418/django-set-field-value-after-a-form-is-initialized
@@ -92,41 +106,39 @@ def image_upload(request, id):
         'template': template
     })
 
-
-
-
 #===========================================
 # Transation
 #===========================================
 def transaction_list(request):
-    """テンプレート一覧"""
+    """テンプレート履歴一覧"""
     transactions = Transaction.objects.all().order_by('id').reverse()
+    if len(transactions) == 0:
+        messages.info(request, 'テンプレートマッチング結果がありません。')
     return render(request, 'transaction/list.html', {'transactions': transactions})
 
 
 def transaction_create(request):
-    """テンプレート編集"""
-
+    """マーチング実施"""
     transaction = Transaction();
 
     if request.method == 'POST':
         form = TransactionForm(request.POST, request.FILES, instance=transaction);
         if form.is_valid():
             transaction = form.save()
-            transaction.save();
-
             # テンプレートマッチング処理
-            handler(transaction)
-
-            transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
-            transaction.save();
-
+            try:
+                status = handler(transaction,request)
+                if status:
+                    transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
+                    transaction.save()
+                    messages.info(request, 'テンプレートマッチング処理が正常に終了しました。')
+            except:
+                messages.error(request, 'テンプレートマッチング処理が失敗しました。')
+                return render(request, 'transaction/create.html', dict(form=form))
             return redirect('template:transaction_list')
     else:
         form = TransactionForm(instance=transaction)
 
-    return render(request, 'transaction/create.html', dict(
-            form=form,
-        ))
+    return render(request, 'transaction/create.html', dict(form=form))
 
 
