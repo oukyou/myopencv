@@ -1,32 +1,29 @@
 {% load staticfiles %}
+{% load bootstrap %}
+{% load fontawesome %}
 
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
+<html lang="{{ LANGUAGE_CODE|default:"ja" }}">
 
 <head>
 <meta charset="UTF-8">
-<title>{% block title %}My books{% endblock %}</title>
+{% fontawesome_stylesheet %}
+<title>{% block title %}テンプレートマーチング{% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+<link href="{% static  'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet">
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
 <script src="{% static 'js/jquery-3.2.1.js' %}"></script>
-<script src="{% static 'js/jquery-ui.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
 <!-- fancybox -->
 <script src="{% static 'js/fancybox/jquery.fancybox.js' %}"></script>
-<link href="{% static  'js/fancybox/jquery.fancybox.css' %}" rel="stylesheet">
-
 <script src="{% static 'js/jquery.uploadThumbs.js' %}"></script>
     {% block extrahead %}{% endblock %}
 </head>
-
-<style>
-body {
-  min-height: 2000px;
-  padding-top: 70px;
-}
-</style>
 
 <body>
 
@@ -35,40 +32,24 @@ body {
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="">物体認識</a>
+          <a class="navbar-brand" href="{% url 'template:transaction_create' %}">{% fontawesome_icon 'eye'  %} 物体認識</a></i>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url 'template:transaction_list' %}">Home</a></li>
-            <li><a href="{% url 'template:transaction_list' %}">テンプレートマッチング</a></li>
-            <li><a href="{% url 'template:template_list' %}">テンプレート管理</a></li>
-            <!--
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">テンプレートマッチング <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
+                <li><a href="{% url 'template:transaction_create' %}">マッチング実施</a></li>
+                  <li><a href="{% url 'template:transaction_list' %}">マッチング履歴一覧</a></li>
                 <li role="separator" class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
+                <li><a href="{% url 'template:template_list' %}">テンプレート管理</a></li>
               </ul>
             </li>
-            -->
-          </ul>
-
-          <ul class="nav navbar-nav navbar-right">
-              <!--
-            <li><a href="../navbar/">Default</a></li>
-            <li><a href="../navbar-static-top/">Static top</a></li>
-            <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
-            -->
           </ul>
         </div><!--/.nav-collapse -->
       </div>

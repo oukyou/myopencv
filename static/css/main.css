@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+/*******************************************************
+	bootstrap重定义
+*******************************************************/
+html{
+	overflow-y: scroll;
+	height: 100%;
+}
+body{
+	font-family: "メイリオ", "Meiryo", sans-serif;
+	font-size: 16px;
+	line-height: 1.4;
+	width: 100%;
+	position: relative;
+	height: auto !important;
+	min-height: 100%;
+	padding-top: 70px;
+}
+
+/*-------------------------------------------
+	表
+--------------------------------------------*/
+.table{
+	font-size: 14px;
+	margin-top: 8px;
+}
+.table th{
+	text-align: center;
+	padding: 5px;
+	background: #edeae5; /* Old browsers */
+	background: -moz-linear-gradient(top,  #fafafa 0%, #f1f1f1 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafa), color-stop(100%,#f1f1f1)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #fafafa 0%,#f1f1f1 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #fafafa 0%,#f1f1f1 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #fafafa 0%,#f1f1f1 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #fafafa 0%,#f1f1f1 100%); /* W3C */
+	color: #333;
+	line-height: 1.5;
+}
+.table th.time{
+	font-size: 10px;
+	line-height: 1;
+}
+
+.table td{
+	padding: 5px;
+	line-height: 1.5;
+	vertical-align:middle;
+}
+.table td.operation{
+	width: 62px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/*-------------------------------------------
+	往bootstrap的「table」里追加样式
+--------------------------------------------*/
+.table td.process{
+	font-size: 12px;
+	line-height: 1;
+}
+.table td.overwork_hour{
+	font-size: 12px;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.table td.process-used{
+	font-size: 12px;
+	line-height: 1;
+	background-color: #016aa9;
+}
+
+/*-------------------------------------------
+	form
+	往bootstrap的「form-horizontal」里追加样式
+--------------------------------------------*/
+.form-horizontal .control-group {
+	margin-bottom: 14px;
+}
+
+.form-horizontal .controls-edit {
+  *display: inline-block;
+  *padding-left: 20px;
+  margin-left: 180px;
+  *margin-left: 0;
+	margin-bottom: 1px;
+}
+.form-horizontal .controls-edit input{
+	border-radius: 0;
+}
+.form-horizontal i + .help-block,
+.form-horizontal label + .help-block{
+  margin-top: 10px;
+}
+
+/* 追加，更新按钮 */
+.operation{
+	text-align: center;
+	margin-top: 15px;
+}
+
+/* 更新表单 */
+.form-box{
+	padding: 5px 0;
+}
+
+/* 画面注释 */
+.form-box span.required{
+	color: #b94a48;
+	font-size: 12px;
+	padding-right: 3px;
+	vertical-align: middle;
+}
+
+.form-box fieldset{
+	border: 1px solid #e6e6e6;
+	border-radius: 5px;
+	padding: 5px;
+	background-color: #fffcf3;
+}
+
+/*******************************************************
+	重定义font-awesome
+*******************************************************/
+[class^="icon-"],
+[class*=" icon-"] {
+	font-size: 13px;
+}
+
+/*-------------------------------------------
+	页面body部分
+--------------------------------------------*/
+#container{
+	padding-bottom: 82px;
+}

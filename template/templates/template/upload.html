@@ -1,57 +1,45 @@
 {% extends 'base.html' %}
 {% load bootstrap %}
+{% load static %}
+{% load fontawesome %}
+{% block title %}テンプレート画像登録{% endblock title %}
 
 {% block content %}
-
-  <h3 class="page-header">画像追加</h3>
-
-<style type="text/css">
-img{
-    width: 300px;
-    height: 300px;
-}
-</style>
-
-  <form method="post" enctype="multipart/form-data">
+<h3 class="page-header">テンプレート画像登録</h3>
+<a href="{% url 'template:template_update' id=template.id %}" class="btn btn-default btn-sm">{% fontawesome_icon 'arrow-left'  %} 戻る </a>
+  <form method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
     {% csrf_token %}
     <!--{{ form.as_p }}-->
 <!--      {{ form|bootstrap_horizontal }}-->
-
-        {% for field in form %}
-            <div class="form-group">
-
-            {% if field.errors %}
-                <div class="control-group error">
-                    <label class="control-label">{{ field.label }}</label>
-                    <div class="controls">{{ field }}
-                        <span class="help-inline">
-                            {% for error in  field.errors %}{{ error }}{% endfor %}
-                        </span>
+        <section class="form-box">
+            <fieldset>
+                <p><span class="required">[*]は必須入力項目です。</span></p>
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="control-group error">
+                        <label class="control-label">{{ field.label }}</label>
+                        <div class="controls">{{ field }}
+                            <span class="help-inline">
+                                {% for error in  field.errors %}{{ error }}{% endfor %}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            {% else %}
-                <div class="control-group">
-                    <label class="control-label">{{ field.label }}</label>
-                    <div class="controls">{{ field }}
-                        {% if field.help_text %}
-                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
-                        {% endif %}
+                {% else %}
+                    <div class="control-group">
+                        <label class="control-label">{{ field.label }}<span class="required">[*]</span></label>
+                        <div class="controls">{{ field }}
+                            {% if field.help_text %}
+                                <p class="help-inline"><small>{{ field.help_text }}</small></p>
+                            {% endif %}
+                        </div>
                     </div>
+                {% endif %}
+            {% endfor %}
+                <div class="operation">
+                    <p><button type="submit" class="btn btn btn-success">{% fontawesome_icon 'save'  %} テンプレート画像を登録する</button></p>
                 </div>
-            {% endif %}
-
-            </div>
-        {% endfor %}
-
-
-    <div class="form-group">
-        <div class="control-group">
-            <button type="submit" class="btn btn-primary pull-right">送信</button>
-            <a href="{% url 'template:template_update' id=template.id %}" class="btn btn-default btn-sm">戻る</a>
-
-        </div>
-    </div>
-
+            </fieldset>
+        </section>
   </form>
 
 <script>

@@ -1,114 +1,150 @@
 {% extends "base.html" %}
 {% load bootstrap %}
 {% load static %}
+{% load fontawesome %}
 
 {% block title %}テンプレート編集{% endblock title %}
 
 {% block content %}
-    <h3 class="page-header">テンプレート編集</h3>
     {% if id %}
+    <h3 class="page-header">テンプレート変更</h3>
+    <a href="{% url 'template:template_list' %}" class="btn btn-default btn-sm">{% fontawesome_icon 'arrow-left'  %} 戻る </a>
     <form action="{% url 'template:template_update' id=id %}" method="post" class="form-horizontal" role="form">
     {% else %}
+    <h3 class="page-header">テンプレート登録</h3>
+    <a href="{% url 'template:template_list' %}" class="btn btn-default btn-sm">{% fontawesome_icon 'arrow-left'  %} 戻る </a>
     <form action="{% url 'template:template_create' %}" method="post" class="form-horizontal" role="form">
     {% endif %}
       {% csrf_token %}
       <!--{{ form|bootstrap_horizontal }}-->
-
-        {% for field in form %}
-            <div class="form-group">
-
-            {% if field.errors %}
-                <div class="control-group error">
-                    <label class="control-label">{{ field.label }}</label>
-                    <div class="controls">{{ field }}
-                        <span class="help-inline">
-                            {% for error in  field.errors %}{{ error }}{% endfor %}
-                        </span>
+        <section class="form-box">
+            <fieldset>
+                <p><span class="required">[*]は必須入力項目です。</span></p>
+            {% for field in form %}
+                {% if field.errors %}
+                    <div class="control-group error">
+                        <label class="control-label">{{ field.label }}</label>
+                        <div class="controls">{{ field }}
+                            <span class="help-inline">
+                                {% for error in  field.errors %}{{ error }}{% endfor %}
+                            </span>
+                        </div>
                     </div>
-                </div>
-            {% else %}
-                <div class="control-group">
-                    <label class="control-label">{{ field.label }}</label>
-                    <div class="controls">{{ field }}
-                        {% if field.help_text %}
-                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
-                        {% endif %}
+                {% else %}
+                    <div class="control-group">
+                        <label class="control-label">{{ field.label }}<span class="required">[*]</span></label>
+                        <div class="controls">{{ field }}
+                            {% if field.help_text %}
+                                <p class="help-inline"><small>{{ field.help_text }}</small></p>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-
-            </div>
-        {% endfor %}
-
+                {% endif %}
+            {% endfor %}
+             {% if not id %}
+                 <div class="operation">
+                    <p><button type="submit" class="btn btn btn-success">{% fontawesome_icon 'save'  %} テンプレートを登録する</button></p>
+                  </div>
+              {% endif %}
+            </fieldset>
+        </section>
 
     {% if id %}
-        <div class="form-group">
-            <div class="control-group">
-                <label class="control-label">画像一覧</label>
-                <div class="controls">
-                    <table class="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <!--<th>ID</th>-->
-                          <th>画像</th>
-                          <th>順位</th>
-                          <th>操作</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for image in images %}
-                        <tr>
-                          <!--<td>{{ image.id }}</td>-->
-                          <td>
-                              <a data-fancybox="gallery" href="{{ image.path.url }}">
-                                <img src="{{ image.path.url }}" width="50px" height="40px"/>
-                              </a>
-                          </td>
+        <h4 class="page-header">テンプレート画像一覧</h4>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "info" %}
+                    <div class="alert alert-success">
+                        <a class="close" data-dismiss="alert">{% fontawesome_icon 'remove'  %}</a>
+                       {{ message }}
+                    </div>
+                {% endif %}
+                 {% if message.tags == "error" %}
+                    <div class="alert alert-danger">
+                        <a class="close" data-dismiss="alert">{% fontawesome_icon 'remove'  %}</a>
+                       {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <a href="{% url 'template:image_upload' id=id %}" class="btn btn-sm btn-success">テンプレート画像登録  {% fontawesome_icon 'caret-right'  %}</a>
+        {% if images %}
+            <div class="controls">
+                <table class="table table-striped table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <!--<th>ID</th>-->
+                        <th>画像</th>
+                        <th>名称</th>
+                        <th>順位</th>
+                        <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for image in images %}
+                    <tr>
+                      <!--<td>{{ image.id }}</td>-->
+                      <td>
+                          <a data-fancybox="gallery" href="{{ image.path.url }}">
+                            <img src="{{ image.path.url }}" width="50px" height="40px"/>
+                          </a>
+                      </td>
+                      <td>
+                          <input type='text' name='image_name' value='{{ image.name }}' class="form-control">
+                      </td>
+                      <td class="rank">
+                          <!--{{ image.rank }}-->
+                          <input type='text' name='rank' value='{{ image.rank }}' class="form-control">
+                          <input type='hidden' name='id' value='{{ image.id }}'>
+                      </td>
+                      <td class="operation">
+                        <a href="{% url 'template:image_delete' id=image.id %}" class="btn btn-sm btn-danger"  id="deleteBtn{{ image.id }}">削除 {% fontawesome_icon 'trash'  %}</a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
 
-                          <td class="rank">
-                              <!--{{ image.rank }}-->
-                              <input type='text' name='rank' value='{{ image.rank }}' class="form-control">
-                              <input type='hidden' name='id' value='{{ image.id }}'>
-                          </td>
-                          <td>
-                            <a href="{% url 'template:image_delete' id=image.id %}" class="btn btn-sm btn-danger">削除</a>
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
+                <div class="operation">
+                    <p><button type="submit" class="btn btn-warning">{% fontawesome_icon 'save'  %} 更新する</button></p>
                 </div>
             </div>
-            <div class="control-group">
-                <a href="{% url 'template:image_upload' id=id %}" class="btn btn-primary btn-sm pull-right">画像追加</a>
+
+            <div id="dialog-confirm" title="テンプレート画像削除確認">
+              <p><span class="ui-icon ui-icon-alert" ></span>このテンプレート画像を削除します。よろしいでしょうか?</p>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
-
-      <div class="form-group">
-        <div class="control-group">
-          <a href="{% url 'template:template_list' %}" class="btn btn-default btn-sm">戻る</a>
-
-          <button type="submit" class="btn btn-sm btn-primary">送信</button>
-        </div>
-      </div>
-
     </form>
 
 <script>
-$(document).ready(function () {
-    //$('#sortTable').sortable();
+    $(document).ready(function () {
+       //　モーダル初期設定
+        $('#dialog-confirm').dialog({
+            autoOpen: false,  // 自動でオープンしない
+            modal: true,      // モーダル表示する
+            resizable: false, // リサイズしない
+            draggable: false, // ドラッグしない
+            show: "clip",     // 表示時のエフェクト
+            hide: "fade",      // 非表示時のエフェクト
+            buttons: {
+                "確認": function() {
+                    location.href=target_url;
+                },
+                "閉じる": function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
 
-    //$('#sortTable').bind('sortstop',function(){
-    //    $(this).find('td.rank').each(function(idx){
-    //        $(this).html(idx+1);
-    //    });
-    //});
-
-});
+        // .selecter クリック時にモーダル表示
+        $("[id^=deleteBtn]").on("click",function(){
+            target_url = $(this).attr("href");
+            $('#dialog-confirm').dialog('open');
+            return false;
+        });
+    });
 </script>
-
-
 {% endblock content %}
 
 
