@@ -4,7 +4,7 @@ from rest_framework import serializers
 from template.models import Templates, Images
 from .models import Transaction;
 
-from template.services import handler
+from .services import handler
 import os
 
 class TemplateSerializer(serializers.ModelSerializer):
@@ -46,8 +46,8 @@ class TransactionSerializer(serializers.Serializer):
         transaction = Transaction.objects.create(**validated_data);
 
         #
-        handler(transaction);
-        transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
+        if handler(transaction):
+            transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
         transaction.save();
 
         return transaction

@@ -16,6 +16,7 @@ class TemplateViewSet(viewsets.ModelViewSet):
     queryset = Templates.objects.all();
     serializer_class = TemplateSerializer;
 
+
 class ImageViewSet(viewsets.ModelViewSet):
     authentication_classes = []
 
@@ -36,20 +37,3 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     queryset = Transaction.objects.all().order_by('id').reverse();
     serializer_class = TransactionSerializer;
-
-
-# class TemplateImageList(generics.ListAPIView):
-#     model = Images
-#     serializer_class = ImageSerializer
-#
-#     # Show all of the PASSENGERS in particular WORKSPACE
-#     # or all of the PASSENGERS in particular AIRLINE
-#     def get_queryset(self):
-#         queryset = Images.objects.all()
-#
-#         template_id = self.request.query_params.get('template_id')
-#
-#         if template_id:
-#             queryset = queryset.filter(template=template_id)
-#
-#         return queryset
