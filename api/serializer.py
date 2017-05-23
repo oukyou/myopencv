@@ -1,9 +1,11 @@
 # coding: utf-8
 
 from rest_framework import serializers
-
 from template.models import Templates, Images
 from .models import Transaction;
+
+from .services import handler
+import os
 
 class TemplateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,8 +21,35 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Transaction
-        #fields = ('id', 'name', 'path', 'rank')
-        fields = '__all__'
+# class TransactionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Transaction
+#         #fields = ('id', 'name', 'path', 'rank')
+#         fields = '__all__'
+
+class TransactionSerializer(serializers.Serializer):
+    # 公開される項目
+    id = serializers.IntegerField(required=False)
+    name = serializers.CharField(required=True, allow_blank=True, max_length=100)
+    src_image = serializers.ImageField(required=True, )
+    dest_image = serializers.ImageField(required=False, allow_null=True)
+    template_id = serializers.CharField(required=False, )
+
+    def create(self, validated_data):
+        """
+        """
+
+        # テンプレート
+        template = Templates.objects.filter(id=validated_data['template_id'])
+
+        # トランザクション
+        transaction = Transaction.objects.create(**validated_data);
+
+        #
+        if handler(transaction):
+            transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
+        transaction.save();
+
+        return transaction
+
+
