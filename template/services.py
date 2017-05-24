@@ -68,6 +68,7 @@ def opencv(path, images, request):
     # テンプレートソート順番配列
     template_sort = []
 
+    image_name_list = []
     for image in images:
         # テンプレート読み込み
         template_img = cv2.imread(os.path.join(settings.MEDIA_ROOT, str(image.path)))
@@ -106,6 +107,7 @@ def opencv(path, images, request):
         # マーチング結果が存在する場合
         if len(found_list) != 0:
             found_list = sorted(found_list, key=lambda x: x[0])
+            addItem = False
             for index in range(len(found_list)):
                 try:
                     (ptX, ptY, ratio) = found_list[index]
@@ -117,44 +119,79 @@ def opencv(path, images, request):
                 # 同じテンプレートが複数存在する場合、テンプレート順番で保存する
                 if ptNextX is None or ((ptNextX - ptX) >= int(tW * ratio / 2)):
                     sort_map[ptX] = (sort_no, ptX, ptY, int(tW * ratio), int(tH * ratio))
-                    if str(sort_no) + "_" + str(ptX) not in result_map:
-                        result_map[str(sort_no) + "_" + str(ptX)] = (sort_no, ptX, ptY, int(tW * ratio), int(tH * ratio))
+                    if str(sort_no) + "_" + str(ptX) not in result_map.keys():
+                        addItem = True
+                        result_map[str(sort_no) + "_" + str(ptX)] = (
+                        sort_no, ptX, ptY, int(tW * ratio), int(tH * ratio))
+            if not addItem:
+                result_map[str(sort_no) + "_None"] = (sort_no, None, None, int(tW / 0.64), int(tH / 0.64))
         else:
-            messages.error(request, "画像名（{0}）のテンプレートがマーチングできません。".format(image.name))
-            return False
+            result_map[str(sort_no) + "_None"] = (sort_no, None, None, int(tW / 0.64), int(tH / 0.64))
+            image_name_list.append(image.name)
+    if len(image_name_list) > 0 :
+        messages.error(request, "画像名（{0}）のテンプレートがマーチングできません。".format(','.join(image_name_list)))
 
     # テンプレート数がマーチング結果数と一致しない場合処理しない
-    if len(sort_map) != len(template_sort):
-        messages.error(request, "テンプレート数と比較用写真にあるテンプレート数と一致していません。")
-        return False
+    #if len(sort_map) != len(template_sort):
+    #    messages.error(request, "テンプレート数と比較用写真にあるテンプレート数と一致していません。")
+    #    return False
 
     # マーチング結果のX軸値を昇順でソートする
-    item_list = sorted(list(result_map.items()), key=lambda x: x[0])
+    item_list = sorted(list(result_map.items()), key=lambda x: x[1][0])
     # テンプレート順をソートする
     sort_list = sorted(list(sort_map.items()), key=lambda x: x[0])
-
     # マーチング結果を判定する
     match_result = {}
+    noneCount = 0
     for index in range(len(item_list)):
-        (sort_no, ptX, _, _, _) = item_list[index][1]
-        count = sort_no - 1
-        ptXTemp = sort_list[count][0]
-
-        # テンプレート順のX軸値がマーチング結果X軸値が同じの場合OK
-        if ptX == ptXTemp:
-            match_result[sort_no] = ("OK", sort_list[count][1])
-        if sort_no not in match_result:
-            match_result[sort_no] = ("NG", sort_list[count][1])
-        temp_sort_no = sort_no
+        (sort_no, ptX, _, w, h) = item_list[index][1]
+        if ptX is not None:
+            try:
+                count = sort_no - noneCount - 1
+                ptXTemp = sort_list[count][0]
+                # テンプレート順のX軸値がマーチング結果X軸値が同じの場合OK
+                if ptX == ptXTemp:
+                    match_result[sort_no] = ("OK", sort_list[count][1])
+                if sort_no not in match_result:
+                    match_result[sort_no] = ("NG", sort_list[count][1])
+            except IndexError:
+                match_result[sort_no] = ("NG", (sort_no, None, None, w, h))
+        else:
+            noneCount += 1
+            match_result[sort_no] = ("NG", item_list[index][1])
 
     # マーチング結果を描画する
+    nonePtX = nonePtY = None
+    loopCount = 0
+    hasNoFrist = False
+    print(match_result.items())
     for item in list(match_result.items()):
         (_, ptX, ptY, tW, tH) = item[1][1]
+        if hasNoFrist and ptX is not None:
+            cv2.line(target, (ptX, ptY - 20), (ptX, ptY + tH + 20), (0, 0, 255), 2)
+            cv2.putText(target, " Image ", (ptX - 60, ptY - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
+            cv2.putText(target, " Missing ", (ptX - 60, ptY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
+            hasNoFrist = False
+
         if item[1][0] == "OK":
             cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 255, 0), 2)
+            nonePtX = ptX + tW
+            nonePtY = ptY + tH
         else:
-            cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 0, 255), 2)
-            cv2.putText(target, "NG", (ptX, ptY + tH // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+            if ptX is not None:
+                cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 0, 255), 2)
+                cv2.putText(target, "NG", (ptX, ptY + tH // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                nonePtX = ptX + tW
+                nonePtY = ptY + tH
+            else:
+                if nonePtX is not None:
+                    cv2.line(target, (nonePtX, nonePtY - tH - 20), (nonePtX, nonePtY + 20), (0, 0, 255), 2)
+                    cv2.putText(target, " Image ", (nonePtX, nonePtY + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255),
+                                1)
+                    cv2.putText(target, " Missing", (nonePtX, nonePtY + 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255),
+                                1)
+                else:
+                    hasNoFrist = True
 
     # 結果格納パス
     resultPath = os.path.join(os.path.dirname(path), "result", os.path.basename(path))

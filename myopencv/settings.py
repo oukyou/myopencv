@@ -25,7 +25,7 @@ SECRET_KEY = 'p!7*snv@%kh^v$7_+st%v75xl!wcxm0buwjg@8=$&aq0xt@^$r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.68.96.157', '*']
+ALLOWED_HOSTS = ['10.68.96.158', '*']
 
 
 # Application definition
@@ -92,7 +92,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'opencv',
-        'USER': 'oukyou',
+        'USER': 'root',
         'PASSWORD': '1qaz2wsx',
         'HOST': 'localhost',
         'PORT': '3306',
@@ -145,7 +145,7 @@ STATICFILES_DIRS = (
 )
 
 
-WEBROOT = "http://10.68.96.157:8000/"
+WEBROOT = "http://10.68.96.158:8000/"
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
