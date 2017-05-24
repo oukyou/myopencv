@@ -92,7 +92,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'opencv',
-        'USER': 'oukyou',
+        'USER': 'root',
         'PASSWORD': '1qaz2wsx',
         'HOST': 'localhost',
         'PORT': '3306',
