@@ -56,6 +56,8 @@ def resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     return resized
 
 def opencv(path, images, request):
+    result = True
+    all_diff = False
     target = cv2.imread(path)
     gray = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
 
@@ -128,8 +130,16 @@ def opencv(path, images, request):
         else:
             result_map[str(sort_no) + "_None"] = (sort_no, None, None, int(tW / 0.64), int(tH / 0.64))
             image_name_list.append(image.name)
-    if len(image_name_list) > 0 :
+
+    if len(image_name_list) > 0 and len(image_name_list) < len(template_sort):
         messages.error(request, "画像名（{0}）のテンプレートがマーチングできません。".format(','.join(image_name_list)))
+        result = False
+    elif len(image_name_list) == len(template_sort):
+        messages.error(request, "テンプレートと全く異なる画像でマーチングできません。")
+        result = False
+        all_diff=True
+    else:
+        result = True
 
     # テンプレート数がマーチング結果数と一致しない場合処理しない
     #if len(sort_map) != len(template_sort):
@@ -160,43 +170,47 @@ def opencv(path, images, request):
             noneCount += 1
             match_result[sort_no] = ("NG", item_list[index][1])
 
-    # マーチング結果を描画する
-    nonePtX = nonePtY = None
-    loopCount = 0
-    hasNoFrist = False
-    print(match_result.items())
-    for item in list(match_result.items()):
-        (_, ptX, ptY, tW, tH) = item[1][1]
-        if hasNoFrist and ptX is not None:
-            cv2.line(target, (ptX, ptY - 20), (ptX, ptY + tH + 20), (0, 0, 255), 2)
-            cv2.putText(target, " Image ", (ptX - 60, ptY - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
-            cv2.putText(target, " Missing ", (ptX - 60, ptY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
-            hasNoFrist = False
+    if not all_diff:
+        # マーチング結果を描画する
+        nonePtX = nonePtY = None
+        loopCount = 0
+        hasNoFrist = False
+        for item in list(match_result.items()):
+            (_, ptX, ptY, tW, tH) = item[1][1]
+            if hasNoFrist and ptX is not None:
+                cv2.line(target, (ptX, ptY - 20), (ptX, ptY + tH + 20), (0, 0, 255), 2)
+                cv2.putText(target, " Image ", (ptX - 60, ptY - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
+                cv2.putText(target, " Missing ", (ptX - 60, ptY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
+                hasNoFrist = False
 
-        if item[1][0] == "OK":
-            cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 255, 0), 2)
-            nonePtX = ptX + tW
-            nonePtY = ptY + tH
-        else:
-            if ptX is not None:
-                cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 0, 255), 2)
-                cv2.putText(target, "NG", (ptX, ptY + tH // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+            if item[1][0] == "OK":
+                cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 255, 0), 2)
                 nonePtX = ptX + tW
                 nonePtY = ptY + tH
             else:
-                if nonePtX is not None:
-                    cv2.line(target, (nonePtX, nonePtY - tH - 20), (nonePtX, nonePtY + 20), (0, 0, 255), 2)
-                    cv2.putText(target, " Image ", (nonePtX, nonePtY + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255),
-                                1)
-                    cv2.putText(target, " Missing", (nonePtX, nonePtY + 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255),
-                                1)
+                if ptX is not None:
+                    cv2.rectangle(target, (ptX, ptY), (ptX + tW, ptY + tH), (0, 0, 255), 2)
+                    cv2.putText(target, "NG", (ptX, ptY + tH // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                    nonePtX = ptX + tW
+                    nonePtY = ptY + tH
                 else:
-                    hasNoFrist = True
-
+                    if nonePtX is not None:
+                        cv2.line(target, (nonePtX, nonePtY - tH - 20), (nonePtX, nonePtY + 20), (0, 0, 255), 2)
+                        cv2.putText(target, " Image ", (nonePtX, nonePtY + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255),
+                                    1)
+                        cv2.putText(target, " Missing", (nonePtX, nonePtY + 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255),
+                                    1)
+                    else:
+                        hasNoFrist = True
+    else:
+        (tH, tW) = target.shape[:2]
+        cv2.rectangle(target, (5, 5), (tW-5, tH-5), (0, 0, 255), 2)
+        cv2.putText(target, "Can not matching the image!", (tW//2-200, tH//2), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255),
+                    1)
     # 結果格納パス
     resultPath = os.path.join(os.path.dirname(path), "result", os.path.basename(path))
     cv2.imwrite(resultPath, target);
-    return True
+    return result
 
 
 

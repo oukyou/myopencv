@@ -128,9 +128,9 @@ def transaction_create(request):
             # テンプレートマッチング処理
             try:
                 status = handler(transaction,request)
+                transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
+                transaction.save()
                 if status:
-                    transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
-                    transaction.save()
                     messages.info(request, 'テンプレートマッチング処理が正常に終了しました。')
             except:
                 messages.error(request, 'テンプレートマッチング処理が失敗しました。')
