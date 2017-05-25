@@ -4,7 +4,7 @@ from rest_framework import serializers
 from template.models import Templates, Images
 from .models import Transaction;
 
-from .services import handler
+from template.services import handler
 import os
 
 class TemplateSerializer(serializers.ModelSerializer):
@@ -35,20 +35,28 @@ class TransactionSerializer(serializers.Serializer):
     dest_image = serializers.ImageField(required=False, allow_null=True)
     template_id = serializers.CharField(required=False, )
 
-    def create(self, validated_data):
+    def create(self, request):
         """
         """
 
         # テンプレート
-        template = Templates.objects.filter(id=validated_data['template_id'])
+        template = Templates.objects.filter(id=request['template_id'])
 
         # トランザクション
-        transaction = Transaction.objects.create(**validated_data);
+        transaction = Transaction.objects.create(**request);
 
         #
-        if handler(transaction):
-            transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
-        transaction.save();
+        #if handler(transaction):
+        #    transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path));
+        #transaction.save();
+
+        try:
+            if handler(transaction, request):
+                transaction.dest_image = os.path.join("transaction", "result",
+                                                      os.path.basename(transaction.src_image.path))
+                transaction.save()
+        except:
+            print("opencv error");
 
         return transaction
 
