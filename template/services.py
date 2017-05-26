@@ -21,7 +21,8 @@ def handler( transaction ,request):
     images = template.Images.all().order_by('rank')
 
     # opencvでテンプレートマッチング
-    return opencv(path, images, request)
+    result = opencv(path, images, request)
+    return result
 
 
 def resize(image, width = None, height = None, inter = cv2.INTER_AREA):
@@ -58,7 +59,10 @@ def resize(image, width = None, height = None, inter = cv2.INTER_AREA):
 def opencv(path, images, request):
     result = True
     all_diff = False
+    print("---------------")
     target = cv2.imread(path)
+    print(target)
+
     gray = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
 
     # ソート番号
@@ -132,10 +136,12 @@ def opencv(path, images, request):
             image_name_list.append(image.name)
 
     if len(image_name_list) > 0 and len(image_name_list) < len(template_sort):
-        messages.error(request, "画像名（{0}）のテンプレートがマーチングできません。".format(','.join(image_name_list)))
+        if request:
+            messages.error(request, "画像名（{0}）のテンプレートがマーチングできません。".format(','.join(image_name_list)))
         result = False
     elif len(image_name_list) == len(template_sort):
-        messages.error(request, "テンプレートと全く異なる画像でマーチングできません。")
+        if request:
+            messages.error(request, "テンプレートと全く異なる画像でマーチングできません。")
         result = False
         all_diff=True
     else:
