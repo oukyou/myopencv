@@ -51,11 +51,11 @@ class TransactionSerializer(serializers.Serializer):
         #transaction.save();
 
         try:
-            status = handler(transaction, request)
+            status = handler(transaction, None)
             transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
             transaction.save()
-        except:
-            print("opencv error");
+        except BaseException:
+            print(BaseException);
 
         return transaction
 
