@@ -215,7 +215,14 @@ def opencv(path, images, request):
                     1)
     # 結果格納パス
     resultPath = os.path.join(os.path.dirname(path), "result", os.path.basename(path))
-    cv2.imwrite(resultPath, target);
+
+    if resultPath[-4:].lower() == '.png':
+        # cv2.IMWRITE_PNG_COMPRESSION，从0到9,压缩级别越高，图像尺寸越小。默认级别为3
+        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_PNG_COMPRESSION), 9]);
+    else:
+        # 对于JPEG，其表示的是图像的质量，用0-100的整数表示
+        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_JPEG_QUALITY), 60]);
+
     return result
 
 
