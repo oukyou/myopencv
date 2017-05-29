@@ -221,7 +221,7 @@ def opencv(path, images, request):
         cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_PNG_COMPRESSION), 9]);
     else:
         # 对于JPEG，其表示的是图像的质量，用0-100的整数表示
-        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_JPEG_QUALITY), 60]);
+        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_JPEG_QUALITY), 40]);
 
     return result
 
