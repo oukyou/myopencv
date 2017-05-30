@@ -136,7 +136,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/opencv/static/'
 
 # 静的ファイルを共通で置く
 STATICFILES_DIRS = (
@@ -153,6 +153,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "data")
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"
-MEDIA_URL = '/images/'
+MEDIA_URL = '/opencv/images/'
 
 
