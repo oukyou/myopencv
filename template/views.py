@@ -9,6 +9,7 @@ from api.models import Transaction
 from django.views.generic.list import ListView
 from myopencv.settings import WEBROOT
 from template.services import handler
+from template.services import handler_surf
 
 from django.db import transaction
 from django.contrib import messages
@@ -130,7 +131,7 @@ def transaction_create(request):
             if transaction.type == '1' :
                 # 特徴量マッチング処理
                 try:
-                    status = handler(transaction,request)
+                    status = handler_surf(transaction,request)
                     transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
                     transaction.save()
                     if status:
