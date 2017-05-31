@@ -25,16 +25,16 @@ from django.views.static import serve
 
 urlpatterns = [
     # admin を有効にする
-    url(r'^opencv/admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
 
     # template
-    url(r'^opencv/template/', include('template.urls', namespace='template')),
+    url(r'^template/', include('template.urls', namespace='template')),
 
     # API
-    url(r'^opencv/api/', include(api_router.urls)),
+    url(r'^api/', include(api_router.urls)),
 
     # link: http://stackoverflow.com/questions/34727928/django-1-10-urls-deprecation
-    url(r'^opencv/data/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})
+    url(r'^data/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT})
 ]
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
