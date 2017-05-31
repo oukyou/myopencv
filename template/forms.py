@@ -18,5 +18,5 @@ class TransactionForm(ModelForm):
     """テンプレートフォーム"""
     class Meta:
         model = Transaction
-        fields = ('name', 'src_image', 'template')
+        fields = ('name', 'src_image', 'template', 'type')
 

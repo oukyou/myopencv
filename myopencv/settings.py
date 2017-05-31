@@ -80,7 +80,6 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 DATABASES = {
     # sqlite3
 #    'default': {
@@ -98,6 +97,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
 
 
 # Password validation

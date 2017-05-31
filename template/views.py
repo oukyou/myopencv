@@ -12,6 +12,7 @@ from template.services import handler
 
 from django.db import transaction
 from django.contrib import messages
+from api.models import TYPE_CHOICES
 
 import cv2
 import os
@@ -114,7 +115,7 @@ def transaction_list(request):
     transactions = Transaction.objects.all().order_by('id').reverse()
     if len(transactions) == 0:
         messages.info(request, 'テンプレートマッチング結果がありません。')
-    return render(request, 'transaction/list.html', {'transactions': transactions})
+    return render(request, 'transaction/list.html', {'transactions': transactions, 'types': TYPE_CHOICES})
 
 
 def transaction_create(request):
@@ -125,16 +126,30 @@ def transaction_create(request):
         form = TransactionForm(request.POST, request.FILES, instance=transaction);
         if form.is_valid():
             transaction = form.save()
-            # テンプレートマッチング処理
-            try:
-                status = handler(transaction,request)
-                transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
-                transaction.save()
-                if status:
-                    messages.info(request, 'テンプレートマッチング処理が正常に終了しました。')
-            except:
-                messages.error(request, 'テンプレートマッチング処理が失敗しました。')
-                return render(request, 'transaction/create.html', dict(form=form))
+
+            if transaction.type == '1' :
+                # 特徴量マッチング処理
+                try:
+                    status = handler(transaction,request)
+                    transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
+                    transaction.save()
+                    if status:
+                        messages.info(request, '特徴量マッチング処理が正常に終了しました。')
+                except:
+                    messages.error(request, '特徴量マッチング処理が失敗しました。')
+                    return render(request, 'transaction/create.html', dict(form=form))
+            else:
+                # テンプレートマッチング処理
+                try:
+                    status = handler(transaction,request)
+                    transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
+                    transaction.save()
+                    if status:
+                        messages.info(request, 'テンプレートマッチング処理が正常に終了しました。')
+                except:
+                    messages.error(request, 'テンプレートマッチング処理が失敗しました。')
+                    return render(request, 'transaction/create.html', dict(form=form))
+
             return redirect('template:transaction_list')
     else:
         form = TransactionForm(instance=transaction)

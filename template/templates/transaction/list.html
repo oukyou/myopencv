@@ -2,13 +2,14 @@
 {% load bootstrap %}
 {% load static %}
 {% load fontawesome %}
-{% block title %}テンプレートマッチング結果一覧{% endblock title %}
+
+{% block title %}物体マッチング結果一覧{% endblock title %}
 
 {% block extrahead %}
 {% endblock %}
 
 {% block content %}
-    <h3 class="page-header">テンプレートマッチング履歴一覧</h3>
+    <h3 class="page-header">物体マッチング履歴一覧</h3>
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == "info" %}
@@ -31,6 +32,7 @@
             <tr>
               <th>＃</th>
               <th>名前</th>
+              <th>タイプ</th>
               <th>元画像</th>
               <th>テンプレート</th>
               <th>処理結果</th>
@@ -41,6 +43,14 @@
             <tr>
               <td>{{ forloop.counter }} </td>
               <td>{{ item.name }}</td>
+              <td>
+                {% if item.type == '1' %}
+                    特徴量マッチング
+                {% else %}
+                    テンプレートマッチング
+                {% endif %}
+              </td>
+
               <td>
                   <a data-fancybox="gallery" href="{{ item.src_image.url }}" class="group{{ forloop.counter }}">
                     <img src="{{ item.src_image.url }}" width="50px" height="40px"/>

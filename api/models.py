@@ -3,6 +3,12 @@ from django.db import models
 from template.models import Templates
 from datetime import datetime
 
+TYPE_CHOICES = (
+    ('', '---------'),
+    ('0','テンプレートマッチング'),
+    ('1', '特徴量マッチング')
+)
+
 # Create your models here.
 class Transaction(models.Model):
 
@@ -14,5 +20,12 @@ class Transaction(models.Model):
     create_time = models.DateTimeField(auto_now_add=True, blank=True)
     update_time = models.DateTimeField(auto_now_add=True, blank=True)
 
+    type = models.CharField("マーチングタイプ", max_length=1, choices=TYPE_CHOICES, default='', null=False)
+
     def __str__(self):
         return self;
+
+
+class TypeField(models.Field):
+    def db_type(self):
+        return 'mytype'

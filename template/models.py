@@ -10,7 +10,6 @@ class Templates(models.Model):
     def __str__(self):
         return self.name
 
-
 # python manage.py makemigrations template
 # python manage.py migrate
 # http://qiita.com/kaki_k/items/ebc8d8b07434e1721756

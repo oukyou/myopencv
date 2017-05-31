@@ -2,10 +2,10 @@
 {% load bootstrap %}
 {% load static %}
 {% load fontawesome %}
-{% block title %}テンプレートマッチング実施{% endblock title %}
+{% block title %}物体マーチング実施{% endblock title %}
 
 {% block content %}
-    <h3 class="page-header">テンプレートマッチング実施</h3>
+    <h3 class="page-header">物体マーチング実施</h3>
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == "info" %}
@@ -50,7 +50,7 @@
                     {% endif %}
                 {% endfor %}
                 <div class="operation">
-                    <p><button type="submit" class="btn btn-primary">{% fontawesome_icon 'random'  %} テンプレートマッチングを実施する</button></p>
+                    <p><button type="submit" class="btn btn-primary">{% fontawesome_icon 'random'  %} 物体マーチングを実施する</button></p>
                 </div>
                 <p><span class="required">※：OpenCVテンプレートマーチングについて、テンプレート画像は元画像よりサイズが小さければならないこと。</span></p>
                 <p><span class="required">　　テンプレート画像が元画像の対象と同じぐらいのサイズ、または等比例スケーリングでないと精度が低いこと。</span></p>
