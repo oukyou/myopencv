@@ -115,5 +115,28 @@ $ make & make install
 
 
 
+##### .gitigonore にファイル名を追加
+
+1.  .gitigonore にファイル名を追加
+```
+    $ vi .gitignore
+```
+2. キャッシュ削除
+
+```
+$ git rm --cached /path/to/file.txt
+```
+
+3. まとめて commit & push
+```
+$ git add .gitignore
+$ git commit -m "add file to .gitignore"
+$ git push origin master
+```
 
 
+
+
+
+
+git rm --cached *cpython-36.pyc
