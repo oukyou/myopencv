@@ -34,6 +34,7 @@ class TransactionSerializer(serializers.Serializer):
     src_image = serializers.ImageField(required=True, )
     dest_image = serializers.ImageField(required=False, allow_null=True)
     template_id = serializers.CharField(required=False, )
+    type = serializers.CharField(required=False, )
 
     def create(self, request):
         """
