@@ -20,7 +20,7 @@ class Transaction(models.Model):
     create_time = models.DateTimeField(auto_now_add=True, blank=True)
     update_time = models.DateTimeField(auto_now_add=True, blank=True)
 
-    type = models.CharField("マーチングタイプ", max_length=1, choices=TYPE_CHOICES, default='', null=False)
+    type = models.CharField("マーチングタイプ", max_length=1, choices=TYPE_CHOICES, default='0', null=False)
 
     def __str__(self):
         return self;
