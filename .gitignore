@@ -3,4 +3,4 @@ data/*
 .idea/*
 static/data/*
 
-
+*cpython-36.pyc
