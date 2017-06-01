@@ -4,7 +4,7 @@ from rest_framework import serializers
 from template.models import Templates, Images
 from .models import Transaction;
 
-from template.services import handler
+from template.services import handler, handler_surf
 import os
 
 class TemplateSerializer(serializers.ModelSerializer):
@@ -52,7 +52,11 @@ class TransactionSerializer(serializers.Serializer):
         #transaction.save();
 
         try:
-            status = handler(transaction, None)
+            if transaction.type == '1':
+                status = handler_surf(transaction, None)
+            else:
+                status = handler(transaction, None)
+
             transaction.dest_image = os.path.join("transaction", "result", os.path.basename(transaction.src_image.path))
             transaction.save()
         except BaseException:
