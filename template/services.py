@@ -299,8 +299,8 @@ def exec_matching(targeImg, tempImg, sortMap, resultMap, sort_no, xRatio=0):
                     sort_no, (xMin + xRatio, yMin), (xMax + xRatio, yMax))
                 else:
                     h, w = targeImg.shape[:2]
-                    xRatio += xMax - (xMax - xMin) // 2
-                    exec_matching(targeImg[0:h, xMax - (xMax - xMin) // 2:w], tempImg, sortMap, resultMap, sort_no,
+                    xRatio += int(xMax * 0.8)
+                    exec_matching(targeImg[0:h, int(xMax * 0.8):w], tempImg, sortMap, resultMap, sort_no,
                                   xRatio)
             else:
                 resultMap[str(sort_no) + "_None"] = (sort_no, (None, None), (None, None))
