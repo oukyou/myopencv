@@ -7,7 +7,6 @@ from template.forms import TemplateForm, ImageForm, TransactionForm
 from api.models import Transaction
 
 from django.views.generic.list import ListView
-from myopencv.settings import WEBROOT
 from template.services import handler
 from template.services import handler_surf
 
@@ -66,7 +65,7 @@ def template_update(request, id=None):
         form = TemplateForm(instance=template)
 
     return render(request, 'template/update.html', dict(
-            form=form, id=id, images=images, webroot = WEBROOT
+            form=form, id=id, images=images
         ))
 
 

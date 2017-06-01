@@ -145,8 +145,6 @@ STATICFILES_DIRS = (
 )
 
 
-WEBROOT = "http://10.68.96.158:8000/"
-
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "data")

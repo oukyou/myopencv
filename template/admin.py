@@ -3,7 +3,6 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib import admin
 from template.models import Templates, Images
-from myopencv.settings import WEBROOT
 
 #admin.site.register(Templates)
 #admin.site.register(Images)
@@ -19,7 +18,7 @@ class ImagesAdmin(admin.ModelAdmin):
     list_display_links = ('id',)  # 修正リンクでクリックできる項目
 
     def custom_path(self, obj):
-        return '<img src="{host}{url}"/ width="50px" height="50px">'.format(host=WEBROOT, url=obj.path);
+        return '<img src="{url}"/ width="50px" height="50px">'.format(url=obj.path);
     custom_path.short_description = u'画像'
     custom_path.allow_tags = True  # htmlタグ許可
 
