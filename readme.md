@@ -177,3 +177,33 @@ Require all granted
 ```
 
 
+
+
+### css/jsファイルのディプロイ
+# python manage.py collectstatic
+
+```
+WSGIScriptAlias /opencv "E:\source\python\myopencv6\myopencv\wsgi.py"
+WSGIPythonHome "E:\env"
+WSGIPythonPath "E:\source\python\myopencv6"
+
+<VirtualHost *:80>
+	ServerName www.example.com
+
+	<Directory "E:\source\python\myopencv6\myopencv">
+		Require all granted
+	</Directory>
+
+	Alias /opencv/static "E:\source\python\myopencv6\static"
+	<Directory "E:\source\python\myopencv6\static">
+		Require all granted
+	</Directory>
+
+	Alias /opencv/images "E:\source\python\myopencv6\data"
+	<Directory "E:\source\python\myopencv6\data">
+		Require all granted
+	</Directory>
+
+</VirtualHost>
+```
+
