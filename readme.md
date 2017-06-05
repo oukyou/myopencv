@@ -125,6 +125,7 @@ $ make & make install
 
 ```
 $ git rm --cached /path/to/file.txt
+# 例えば：git rm --cached *cpython-36.pyc
 ```
 
 3. まとめて commit & push
@@ -137,6 +138,42 @@ $ git push origin master
 
 
 
+##### Windows, apache2.4, mod_wsgi環境構築
+
+1. mod_wsgiをダウンロードする
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#mod_wsgi
+```
+pip install mod_wsgi-4.4.23+ap24vc14-cp35-cp35m-win_amd64.wh
+```
+Apacheのmod_wsgiモジュールパスは ** "{python_path}\site-packages\mod_wsgi\server\mod_wsgi.cp36-win_amd64.pyd" **
+
+2. Apache conf
+```
+#-------------------------------------------------
+# Django Settings
+#-------------------------------------------------
+LoadModule wsgi_module "E:\env\Lib\site-packages\mod_wsgi\server\mod_wsgi.cp36-win_amd64.pyd"
+
+WSGIScriptAlias /opencv "E:\source\python\myopencv6\myopencv\wsgi.py"
+WSGIPythonHome "E:\env"
+WSGIPythonPath "E:\source\python\myopencv6"
+
+<Directory "E:\source\python\myopencv6\myopencv">
+	<Files wsgi.py>
+		Require all granted
+	</Files>
+</Directory>
+
+Alias /data/   "E:\source\python\myopencv6\data"
+Alias /static/ "E:\source\python\myopencv6\static"
+
+<Directory "E:\source\python\myopencv6\static">
+Require all granted
+</Directory>
+
+<Directory "E:\source\python\myopencv6\data">
+Require all granted
+</Directory>
+```
 
 
-git rm --cached *cpython-36.pyc
