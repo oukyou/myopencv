@@ -368,7 +368,8 @@ def opencv_surf(path, images, request):
         hasNoFrist = False
         h, w = target.shape[:2]
         for item in list(match_result.items()):
-            (_, (ptX, ptY), (ptMaxX, ptMaxY)) = item[1][1]
+            loopCount+=1
+            (sort_no, (ptX, ptY), (ptMaxX, ptMaxY)) = item[1][1]
             if hasNoFrist and ptX is not None:
                 cv2.line(target, (ptX - 2, 5), (ptX - 2, h - 5), (0, 0, 255), 2)
                 cv2.putText(target, " Image ", (ptX - 60, ptY - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
@@ -377,12 +378,17 @@ def opencv_surf(path, images, request):
 
             if item[1][0] == "OK":
                 cv2.rectangle(target, (ptX, ptY), (ptMaxX, ptMaxY), (0, 255, 0), 2)
+                cv2.putText(target, str(sort_no)+"-"+str(loopCount), (ptX + 10, ptY-5), cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                            (0, 255, 0), 2)
                 nonePtX = ptMaxX
                 nonePtY = ptMaxY
             else:
                 if ptX is not None:
                     cv2.rectangle(target, (ptX, ptY), (ptMaxX, ptMaxY), (0, 0, 255), 2)
                     cv2.putText(target, "NG", (ptX+5, ptY+(ptMaxY-ptY)//2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                    cv2.putText(target, str(sort_no) + "-" + str(loopCount), (ptX + 10, ptY - 5),
+                                cv2.FONT_HERSHEY_SIMPLEX, 1.0,
+                                (0, 0, 255), 2)
                     nonePtX = ptMaxX
                     nonePtY = ptMaxY
                 else:
@@ -403,10 +409,10 @@ def opencv_surf(path, images, request):
 
     if resultPath[-4:].lower() == '.png':
         # cv2.IMWRITE_PNG_COMPRESSION，从0到9,压缩级别越高，图像尺寸越小。默认级别为3
-        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_PNG_COMPRESSION), 9]);
+        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_PNG_COMPRESSION), 4]);
     else:
         # 对于JPEG，其表示的是图像的质量，用0-100的整数表示
-        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_JPEG_QUALITY), 40]);
+        cv2.imwrite(resultPath, target, [int(cv2.IMWRITE_JPEG_QUALITY), 80]);
 
     return result
 
